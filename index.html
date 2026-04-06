@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Morrel Family &bull; Greece 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+:root {
+  --navy: #0a1628;
+  --blue: #1b3a5c;
+  --blue-med: #2471a3;
+  --blue-light: #5dade2;
+  --sky: #aed6f1;
+  --gold: #d4a017;
+  --gold-light: #f7dc6f;
+  --white: #ffffff;
+  --cream: #faf8f5;
+  --sand: #f0ece4;
+  --text: #1a1a2e;
+  --text-light: #5a6478;
+  --coral: #e74c3c;
+  --green: #27ae60;
+  --sea: #0e6655;
+  --terracotta: #c0392b;
+  --olive: #6b8e23;
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
+  --shadow: 0 8px 32px rgba(0,0,0,0.10);
+  --shadow-lg: 0 16px 48px rgba(0,0,0,0.15);
+  --radius: 20px;
+  --radius-sm: 12px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Inter',system-ui,sans-serif;color:var(--text);background:var(--cream);line-height:1.7;overflow-x:hidden;}
+h1,h2,h3,.serif{font-family:'Playfair Display',Georgia,serif;}
+img{max-width:100%;display:block;}
+a{color:var(--blue-med);text-decoration:none;}
+a:hover{color:var(--gold);}
+
+/* ===== NAV ===== */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:70px;transition:all 0.4s;}
+nav.scrolled{background:rgba(10,22,40,0.95);backdrop-filter:blur(20px);box-shadow:0 2px 30px rgba(0,0,0,0.2);}
+nav.top{background:transparent;}
+.nav-logo{display:flex;align-items:center;gap:0.7rem;}
+.nav-logo .icon{font-size:1.5rem;}
+.nav-logo .text{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;color:var(--gold-light);letter-spacing:1px;}
+.nav-logo .sub{font-family:'Inter',sans-serif;font-size:0.65rem;color:rgba(255,255,255,0.6);letter-spacing:3px;text-transform:uppercase;display:block;margin-top:-4px;}
+nav ul{list-style:none;display:flex;gap:0.3rem;}
+nav li a{color:rgba(255,255,255,0.75);padding:0.5rem 1rem;border-radius:10px;font-size:0.82rem;font-weight:500;transition:all 0.3s;letter-spacing:0.5px;}
+nav li a:hover,nav li a.active{color:var(--gold-light);background:rgba(255,255,255,0.08);}
+.hamburger{display:none;background:none;border:none;color:white;font-size:1.6rem;cursor:pointer;padding:0.5rem;}
+
+/* ===== HERO ===== */
+.hero{min-height:100vh;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;background:linear-gradient(135deg,#0a1628 0%,#0d2137 20%,#133a5e 40%,#1a5276 60%,#1f6f99 80%,#2980b9 100%);z-index:0;}
+.hero-bg::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 80%,rgba(212,160,23,0.15) 0%,transparent 60%),radial-gradient(ellipse at 70% 20%,rgba(93,173,226,0.1) 0%,transparent 50%);}
+.hero-overlay{position:absolute;inset:0;z-index:1;opacity:0.04;background-image:url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23fff'%3E%3Ccircle cx='40' cy='40' r='1'/%3E%3C/g%3E%3C/svg%3E");}
+.hero-content{position:relative;z-index:2;text-align:center;padding:2rem;max-width:900px;}
+.hero-eyebrow{font-family:'Inter',sans-serif;font-size:0.75rem;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:1.5rem;font-weight:600;}
+.hero h1{font-size:clamp(3rem,8vw,6.5rem);color:white;font-weight:900;line-height:0.95;margin-bottom:0.5rem;}
+.hero h1 .outline{-webkit-text-stroke:2px rgba(255,255,255,0.4);color:transparent;}
+.hero h1 .gold{color:var(--gold-light);}
+.hero .tagline{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(1.1rem,2.5vw,1.6rem);color:rgba(255,255,255,0.6);margin:1.5rem 0;font-weight:400;}
+.hero .dates-pill{display:inline-flex;align-items:center;gap:1rem;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);padding:0.8rem 2.5rem;border-radius:60px;margin:1.5rem 0;backdrop-filter:blur(10px);}
+.dates-pill .divider{width:1px;height:30px;background:rgba(255,255,255,0.2);}
+.dates-pill span{color:rgba(255,255,255,0.85);font-size:0.95rem;font-weight:500;letter-spacing:1px;}
+.dates-pill .accent{color:var(--gold-light);font-weight:700;}
+.hero-cta{display:flex;gap:1rem;justify-content:center;margin-top:2rem;flex-wrap:wrap;}
+.btn{display:inline-flex;align-items:center;gap:0.6rem;padding:0.9rem 2.2rem;border-radius:60px;font-weight:600;font-size:0.9rem;transition:all 0.4s;cursor:pointer;border:none;font-family:'Inter',sans-serif;letter-spacing:0.5px;}
+.btn-gold{background:linear-gradient(135deg,var(--gold),#e8b710);color:var(--navy);box-shadow:0 4px 20px rgba(212,160,23,0.4);}
+.btn-gold:hover{transform:translateY(-3px);box-shadow:0 8px 30px rgba(212,160,23,0.5);color:var(--navy);}
+.btn-outline{background:transparent;color:white;border:1.5px solid rgba(255,255,255,0.25);}
+.btn-outline:hover{background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.5);color:white;}
+.hero-scroll{position:absolute;bottom:2rem;z-index:2;display:flex;flex-direction:column;align-items:center;gap:0.5rem;color:rgba(255,255,255,0.35);font-size:0.7rem;letter-spacing:3px;text-transform:uppercase;}
+.hero-scroll .line{width:1px;height:40px;background:linear-gradient(to bottom,rgba(255,255,255,0.4),transparent);animation:scrollLine 2s infinite;}
+@keyframes scrollLine{0%{opacity:1;transform:scaleY(1);}100%{opacity:0;transform:scaleY(0);transform-origin:top;}}
+
+/* ===== COUNTDOWN ===== */
+.countdown{background:var(--navy);padding:1.8rem 2rem;display:flex;justify-content:center;gap:3.5rem;flex-wrap:wrap;position:relative;}
+.countdown::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.cd-item{text-align:center;}
+.cd-item .num{font-family:'Playfair Display',serif;font-size:2.8rem;font-weight:900;color:var(--gold-light);line-height:1;}
+.cd-item .lbl{font-size:0.65rem;text-transform:uppercase;letter-spacing:3px;color:rgba(255,255,255,0.4);margin-top:0.3rem;}
+
+/* ===== SECTIONS ===== */
+section{padding:6rem 2rem;}
+.container{max-width:1200px;margin:0 auto;}
+.sec-header{text-align:center;margin-bottom:4rem;}
+.sec-header .eyebrow{font-size:0.72rem;letter-spacing:4px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:0.8rem;}
+.sec-header h2{font-size:clamp(2rem,4vw,3.2rem);font-weight:900;color:var(--navy);line-height:1.1;margin-bottom:0.8rem;}
+.sec-header p{color:var(--text-light);font-size:1.05rem;max-width:600px;margin:0 auto;line-height:1.8;}
+.sec-header .accent-line{width:60px;height:3px;background:linear-gradient(90deg,var(--gold),var(--gold-light));margin:1rem auto 0;border-radius:3px;}
+
+/* ===== INTRO MESSAGE ===== */
+.intro-section{background:var(--cream);position:relative;}
+.intro-card{max-width:800px;margin:0 auto;background:white;border-radius:var(--radius);padding:3rem 3.5rem;box-shadow:var(--shadow);position:relative;border:1px solid rgba(0,0,0,0.04);}
+.intro-card::before{content:'\201C';position:absolute;top:-10px;left:30px;font-family:'Playfair Display',serif;font-size:8rem;color:var(--gold-light);opacity:0.3;line-height:1;}
+.intro-card p{font-size:1.1rem;color:var(--text);line-height:2;position:relative;z-index:1;}
+.intro-card .sig{margin-top:2rem;padding-top:1.5rem;border-top:1px solid #eee;font-family:'Playfair Display',serif;font-style:italic;color:var(--gold);font-size:1.1rem;}
+
+/* ===== MAP SECTION ===== */
+.map-section{background:var(--navy);padding:5rem 2rem;position:relative;overflow:hidden;}
+.map-section .sec-header h2{color:var(--gold-light);}
+.map-section .sec-header p{color:rgba(255,255,255,0.6);}
+.map-section .sec-header .eyebrow{color:var(--sky);}
+.map-wrap{border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-lg);border:2px solid rgba(255,255,255,0.1);max-width:1100px;margin:0 auto;}
+#main-map{height:550px;width:100%;background:#1a2744;}
+.leaflet-popup-content-wrapper{border-radius:12px !important;box-shadow:0 8px 30px rgba(0,0,0,0.2) !important;}
+.leaflet-popup-content{font-family:'Inter',sans-serif !important;padding:8px 4px !important;}
+.map-popup{text-align:center;min-width:160px;}
+.map-popup h4{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--navy);margin-bottom:0.3rem;}
+.map-popup .day-tag{display:inline-block;background:var(--blue);color:white;padding:0.15rem 0.7rem;border-radius:20px;font-size:0.7rem;font-weight:600;margin-bottom:0.4rem;}
+.map-popup p{font-size:0.8rem;color:var(--text-light);line-height:1.5;}
+.map-legend{display:flex;justify-content:center;gap:2rem;margin-top:1.5rem;flex-wrap:wrap;}
+.map-legend-item{display:flex;align-items:center;gap:0.5rem;color:rgba(255,255,255,0.7);font-size:0.8rem;}
+.map-legend-item .dot{width:12px;height:12px;border-radius:50%;border:2px solid rgba(255,255,255,0.3);}
+
+/* ===== DESTINATION CARDS ===== */
+.dest-section{background:var(--cream);}
+.dest-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:2rem;}
+.dest-card{background:white;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm);transition:all 0.5s cubic-bezier(0.25,0.46,0.45,0.94);border:1px solid rgba(0,0,0,0.04);cursor:default;}
+.dest-card:hover{transform:translateY(-8px);box-shadow:var(--shadow-lg);}
+.dest-img{height:220px;position:relative;overflow:hidden;}
+.dest-img .gradient-art{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
+.dest-img .emoji-icon{font-size:4rem;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.3));z-index:2;position:relative;}
+.dest-img .overlay{position:absolute;bottom:0;left:0;right:0;padding:1.2rem 1.5rem;background:linear-gradient(transparent,rgba(0,0,0,0.7));z-index:3;}
+.dest-img .overlay h3{color:white;font-size:1.4rem;font-weight:700;}
+.dest-img .overlay .sub{color:rgba(255,255,255,0.7);font-size:0.8rem;font-family:'Inter',sans-serif;}
+.dest-body{padding:1.5rem 1.8rem 1.8rem;}
+.dest-body p{font-size:0.92rem;color:var(--text-light);line-height:1.8;margin-bottom:1rem;}
+.dest-facts{display:flex;flex-wrap:wrap;gap:0.5rem;}
+.dest-fact{display:inline-flex;align-items:center;gap:0.3rem;background:var(--sand);padding:0.3rem 0.8rem;border-radius:20px;font-size:0.78rem;font-weight:500;color:var(--blue);}
+
+/* Color themes for destination images */
+.dest-athens{background:linear-gradient(135deg,#2c3e50,#3498db);}
+.dest-corinth{background:linear-gradient(135deg,#8e6e53,#d4a76a);}
+.dest-meteora{background:linear-gradient(135deg,#2d4a22,#6b8e23);}
+.dest-mykonos{background:linear-gradient(135deg,#2471a3,#85c1e9);}
+.dest-kusadasi{background:linear-gradient(135deg,#7d3c98,#bb8fce);}
+.dest-patmos{background:linear-gradient(135deg,#1a5276,#5dade2);}
+.dest-rhodes{background:linear-gradient(135deg,#b7950b,#f9e79f);}
+.dest-crete{background:linear-gradient(135deg,#0e6655,#45b39d);}
+.dest-santorini{background:linear-gradient(135deg,#1f4e79,#e74c3c);}
+.dest-samos{background:linear-gradient(135deg,#117a65,#76d7c4);}
+
+/* ===== TIMELINE ===== */
+.timeline-section{background:var(--sand);position:relative;}
+.timeline{max-width:900px;margin:0 auto;position:relative;padding-left:80px;}
+.timeline::before{content:'';position:absolute;left:38px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--gold),var(--blue-med),var(--sea),var(--gold),var(--coral));border-radius:2px;}
+.tl-phase{margin-bottom:3rem;}
+.tl-phase-title{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--gold);margin-bottom:1.5rem;padding-left:0;position:relative;letter-spacing:1px;}
+.tl-card{position:relative;background:white;border-radius:var(--radius);padding:2rem 2rem 1.5rem;margin-bottom:1.5rem;box-shadow:var(--shadow-sm);transition:all 0.4s;border:1px solid rgba(0,0,0,0.04);}
+.tl-card:hover{box-shadow:var(--shadow);transform:translateX(4px);}
+.tl-dot{position:absolute;left:-52px;top:2rem;width:18px;height:18px;border-radius:50%;border:3px solid white;box-shadow:0 0 0 2px var(--blue-med),var(--shadow-sm);}
+.tl-dot.athens{background:var(--blue-med);}
+.tl-dot.meteora{background:var(--olive);}
+.tl-dot.cruise{background:var(--sea);}
+.tl-dot.samos{background:var(--gold);}
+.tl-dot.travel{background:var(--coral);}
+.tl-dot.rafina{background:#8e44ad;}
+.tl-top{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.8rem;}
+.tl-day{font-size:0.7rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--blue-med);}
+.tl-date{font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:700;color:var(--navy);}
+.tl-badge{padding:0.25rem 0.9rem;border-radius:30px;font-size:0.7rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+.bg-athens{background:#ebdef0;color:#6c3483;}
+.bg-meteora{background:#d5f5e3;color:#1e8449;}
+.bg-cruise{background:#d6eaf8;color:#1a5276;}
+.bg-samos{background:#fdebd0;color:#b9770e;}
+.bg-travel{background:#fadbd8;color:#922b21;}
+.bg-rafina{background:#e8daef;color:#6c3483;}
+.tl-title{font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--navy);margin-bottom:0.8rem;}
+.tl-body{font-size:0.92rem;color:var(--text-light);}
+.tl-body ul{list-style:none;}
+.tl-body li{padding:0.35rem 0;display:flex;align-items:flex-start;gap:0.6rem;}
+.tl-body li .ic{flex-shrink:0;width:20px;text-align:center;}
+.time-chip{display:inline-block;background:var(--navy);color:var(--gold-light);padding:0.12rem 0.6rem;border-radius:6px;font-size:0.75rem;font-weight:700;margin-right:0.3rem;font-family:'Inter',sans-serif;}
+.tl-body .hl{font-weight:700;color:var(--navy);}
+.tl-included{margin-top:0.8rem;background:linear-gradient(135deg,#eaf7ef,#d5f5e3);border-radius:10px;padding:0.7rem 1rem;font-size:0.82rem;color:var(--sea);font-weight:500;}
+.tl-hotel{margin-top:0.8rem;padding-top:0.8rem;border-top:1px dashed #e0e0e0;display:flex;align-items:center;gap:0.5rem;font-size:0.85rem;color:var(--text-light);}
+.tl-minimap{width:100%;height:150px;border-radius:var(--radius-sm);margin-top:1rem;overflow:hidden;border:1px solid #e0e0e0;}
+
+/* ===== HOTELS ===== */
+.hotels-section{background:var(--cream);}
+.hotel-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.8rem;}
+.hotel-card{background:white;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm);transition:all 0.4s;border:1px solid rgba(0,0,0,0.04);}
+.hotel-card:hover{transform:translateY(-6px);box-shadow:var(--shadow);}
+.hotel-top{height:10px;}
+.hotel-top.ht-athens{background:linear-gradient(90deg,#6c3483,#a569bd);}
+.hotel-top.ht-meteora{background:linear-gradient(90deg,#1e8449,#52be80);}
+.hotel-top.ht-cruise{background:linear-gradient(90deg,#1a5276,#5dade2);}
+.hotel-top.ht-samos{background:linear-gradient(90deg,#b9770e,#f7dc6f);}
+.hotel-top.ht-rafina{background:linear-gradient(90deg,#922b21,#e74c3c);}
+.hotel-body{padding:1.8rem;}
+.hotel-body h3{font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--navy);margin-bottom:0.3rem;}
+.hotel-body .loc{color:var(--text-light);font-size:0.85rem;margin-bottom:1rem;}
+.hotel-meta{display:flex;flex-direction:column;gap:0.4rem;font-size:0.88rem;color:var(--text);}
+.hotel-meta div{display:flex;align-items:center;gap:0.5rem;}
+.nights-badge{display:inline-block;background:var(--navy);color:var(--gold-light);padding:0.2rem 0.8rem;border-radius:30px;font-size:0.75rem;font-weight:700;}
+.hotel-minimap{height:120px;border-radius:var(--radius-sm);margin-top:1rem;overflow:hidden;border:1px solid #e0e0e0;}
+
+/* ===== INCLUDED ===== */
+.included-section{background:var(--sand);}
+.inc-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;max-width:900px;margin:0 auto;}
+.inc-card{background:white;border-radius:var(--radius);padding:2.5rem;box-shadow:var(--shadow-sm);border:1px solid rgba(0,0,0,0.04);}
+.inc-card h3{font-family:'Playfair Display',serif;font-size:1.3rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:0.6rem;}
+.inc-card.yes h3{color:var(--green);}
+.inc-card.no h3{color:var(--coral);}
+.inc-card ul{list-style:none;}
+.inc-card li{padding:0.55rem 0;font-size:0.92rem;display:flex;align-items:flex-start;gap:0.6rem;border-bottom:1px solid #f5f5f5;}
+.inc-card li:last-child{border:none;}
+.meal-tip{max-width:700px;margin:2.5rem auto 0;background:linear-gradient(135deg,#fef9e7,#fdebd0);border:2px solid var(--gold);border-radius:var(--radius);padding:2rem 2.5rem;text-align:center;}
+.meal-tip h3{font-family:'Playfair Display',serif;color:var(--gold);margin-bottom:0.5rem;font-size:1.1rem;}
+.meal-tip p{font-size:0.95rem;line-height:1.8;}
+
+/* ===== CRUISE SECTION ===== */
+.cruise-section{background:linear-gradient(180deg,#0a1628 0%,#0d2844 50%,#133a5e 100%);color:white;position:relative;overflow:hidden;}
+.cruise-section::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='100' height='20' viewBox='0 0 100 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 10 Q25 0 50 10 Q75 20 100 10' fill='none' stroke='%23ffffff' stroke-opacity='0.03' stroke-width='1'/%3E%3C/svg%3E");background-size:100px 20px;animation:waves 8s linear infinite;}
+@keyframes waves{0%{background-position:0 0;}100%{background-position:100px 0;}}
+.cruise-section .sec-header h2{color:var(--gold-light);}
+.cruise-section .sec-header p{color:rgba(255,255,255,0.6);}
+.cruise-section .sec-header .eyebrow{color:var(--sky);}
+.cruise-ship-card{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:var(--radius);padding:2.5rem;margin-bottom:2rem;backdrop-filter:blur(10px);}
+.cruise-ship-header{display:flex;align-items:center;gap:2rem;margin-bottom:2rem;flex-wrap:wrap;}
+.cruise-ship-icon{font-size:4rem;background:rgba(255,255,255,0.08);width:100px;height:100px;border-radius:var(--radius);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.cruise-ship-info h3{font-family:'Playfair Display',serif;font-size:1.6rem;color:white;margin-bottom:0.3rem;}
+.cruise-ship-info .ship-sub{color:rgba(255,255,255,0.6);font-size:0.9rem;line-height:1.6;}
+.cruise-ship-info .ship-stats{display:flex;gap:1.5rem;flex-wrap:wrap;margin-top:0.8rem;}
+.ship-stat{background:rgba(255,255,255,0.08);padding:0.4rem 1rem;border-radius:30px;font-size:0.8rem;color:var(--sky);font-weight:600;}
+.cruise-features{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.5rem;margin-bottom:2rem;}
+.cruise-feat{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:var(--radius-sm);padding:1.5rem;transition:all 0.3s;}
+.cruise-feat:hover{background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.15);}
+.cruise-feat .cf-icon{font-size:1.8rem;margin-bottom:0.6rem;}
+.cruise-feat h4{font-family:'Playfair Display',serif;color:var(--gold-light);margin-bottom:0.5rem;font-size:1rem;}
+.cruise-feat p{color:rgba(255,255,255,0.6);font-size:0.85rem;line-height:1.7;}
+.cruise-feat ul{list-style:none;margin-top:0.4rem;}
+.cruise-feat li{color:rgba(255,255,255,0.6);font-size:0.83rem;padding:0.2rem 0;display:flex;align-items:center;gap:0.4rem;}
+.cruise-itinerary{margin-top:1rem;}
+.cruise-port{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:1.5rem;padding:1.2rem 1.5rem;background:rgba(255,255,255,0.04);border-radius:var(--radius-sm);margin-bottom:0.8rem;border:1px solid rgba(255,255,255,0.06);transition:all 0.3s;}
+.cruise-port:hover{background:rgba(255,255,255,0.07);}
+.cruise-port .cp-icon{font-size:2rem;width:50px;text-align:center;}
+.cruise-port .cp-info h4{color:white;font-family:'Playfair Display',serif;font-size:1.05rem;}
+.cruise-port .cp-info p{color:rgba(255,255,255,0.5);font-size:0.82rem;line-height:1.5;margin-top:0.2rem;}
+.cruise-port .cp-time{text-align:right;white-space:nowrap;}
+.cruise-port .cp-time .hours{color:var(--gold-light);font-weight:700;font-size:1.1rem;}
+.cruise-port .cp-time .range{color:rgba(255,255,255,0.5);font-size:0.78rem;display:block;margin-top:0.1rem;}
+.cruise-note{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:var(--radius-sm);padding:1.5rem;margin-top:1.5rem;text-align:center;}
+.cruise-note h4{color:var(--gold-light);font-family:'Playfair Display',serif;margin-bottom:0.4rem;}
+.cruise-note p{color:rgba(255,255,255,0.6);font-size:0.88rem;line-height:1.7;}
+.cruise-map-wrap{border-radius:var(--radius);overflow:hidden;border:2px solid rgba(255,255,255,0.1);margin-top:2rem;}
+#cruise-map{height:350px;width:100%;}
+
+/* ===== PAYMENT ===== */
+.payment-section{background:linear-gradient(135deg,var(--navy) 0%,#0d2137 50%,#133a5e 100%);color:white;position:relative;}
+.payment-section::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.payment-section .sec-header h2{color:var(--gold-light);}
+.payment-section .sec-header p{color:rgba(255,255,255,0.6);}
+.payment-section .sec-header .eyebrow{color:var(--sky);}
+.pay-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.5rem;max-width:900px;margin:0 auto;}
+.pay-card{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:var(--radius);padding:2.5rem 2rem;text-align:center;backdrop-filter:blur(10px);transition:all 0.4s;}
+.pay-card:hover{background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.2);}
+.pay-card .pay-icon{font-size:2.5rem;margin-bottom:1rem;}
+.pay-card h3{font-family:'Playfair Display',serif;color:var(--gold-light);margin-bottom:0.5rem;font-size:1.1rem;}
+.pay-card p{color:rgba(255,255,255,0.65);font-size:0.9rem;line-height:1.7;}
+.pay-card .amount{font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:900;color:white;margin:0.5rem 0;}
+.pay-card .deadline{display:inline-block;background:var(--coral);padding:0.35rem 1.2rem;border-radius:30px;font-weight:700;font-size:0.85rem;margin-top:0.5rem;}
+
+/* ===== CONTACT ===== */
+.contact-section{background:var(--cream);}
+.contact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;max-width:700px;margin:0 auto;}
+.contact-card{background:white;border-radius:var(--radius);padding:2.5rem;text-align:center;box-shadow:var(--shadow-sm);border:1px solid rgba(0,0,0,0.04);transition:all 0.4s;}
+.contact-card:hover{box-shadow:var(--shadow);}
+.contact-card .cc-icon{font-size:2.5rem;margin-bottom:0.8rem;}
+.contact-card h3{font-family:'Playfair Display',serif;color:var(--navy);margin-bottom:0.3rem;}
+.contact-card p{color:var(--text-light);font-size:0.9rem;}
+.contact-card .phone{display:block;margin-top:0.8rem;font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;color:var(--navy);letter-spacing:1px;}
+
+/* ===== FOOTER ===== */
+footer{background:var(--navy);padding:3rem 2rem;text-align:center;position:relative;}
+footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+footer p{color:rgba(255,255,255,0.4);font-size:0.85rem;}
+footer .heart{color:var(--coral);}
+footer .ff{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--gold-light);margin-bottom:0.5rem;}
+
+/* ===== STATS BAR ===== */
+.stats-bar{display:grid;grid-template-columns:repeat(6,1fr);gap:1rem;margin-bottom:3rem;}
+.stat-item{background:white;border-radius:var(--radius);padding:1.8rem 1rem;text-align:center;box-shadow:var(--shadow-sm);transition:all 0.4s;border:1px solid rgba(0,0,0,0.04);}
+.stat-item:hover{transform:translateY(-4px);box-shadow:var(--shadow);}
+.stat-item .s-icon{font-size:2rem;margin-bottom:0.4rem;}
+.stat-item .s-num{font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:var(--navy);}
+.stat-item .s-label{font-size:0.75rem;color:var(--text-light);letter-spacing:1px;text-transform:uppercase;margin-top:0.1rem;}
+
+/* ===== FLIGHTS ===== */
+.flights-section{background:var(--sand);}
+.flight-card{background:white;border-radius:var(--radius);padding:2.5rem;box-shadow:var(--shadow-sm);margin-bottom:1.5rem;border:1px solid rgba(0,0,0,0.04);}
+.flight-card h3{font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--navy);margin-bottom:1.2rem;display:flex;align-items:center;gap:0.5rem;}
+.fl-leg{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:1.5rem;padding:1.2rem;background:var(--cream);border-radius:var(--radius-sm);margin-bottom:0.8rem;}
+.fl-city{font-weight:700;font-size:1.05rem;color:var(--navy);}
+.fl-code{font-size:0.75rem;color:var(--blue-med);font-weight:600;letter-spacing:1px;}
+.fl-time{font-size:0.9rem;color:var(--text-light);margin-top:0.2rem;}
+.fl-mid{text-align:center;position:relative;}
+.fl-mid .plane{font-size:1.3rem;}
+.fl-mid .fl-num{font-size:0.7rem;color:var(--text-light);font-weight:500;display:block;margin-top:0.2rem;}
+.fl-mid .fl-line{width:80px;height:1px;background:var(--gold);margin:0.3rem auto;position:relative;}
+.fl-mid .fl-line::before,.fl-mid .fl-line::after{content:'';position:absolute;top:-2px;width:6px;height:6px;border-radius:50%;background:var(--gold);}
+.fl-mid .fl-line::before{left:0;}
+.fl-mid .fl-line::after{right:0;}
+.fl-dest{text-align:right;}
+.bag-box{background:var(--cream);border-radius:var(--radius-sm);padding:1.5rem 2rem;margin-top:1.5rem;border:1px solid #e8e2d8;}
+.bag-box h4{font-family:'Playfair Display',serif;color:var(--navy);margin-bottom:0.6rem;}
+.bag-box ul{list-style:none;}
+.bag-box li{padding:0.3rem 0;font-size:0.9rem;display:flex;align-items:center;gap:0.5rem;}
+
+/* ===== ANIMATIONS ===== */
+.fade-up{opacity:0;transform:translateY(40px);transition:opacity 0.7s ease,transform 0.7s ease;}
+.fade-up.vis{opacity:1;transform:translateY(0);}
+.fade-up:nth-child(2){transition-delay:0.1s;}
+.fade-up:nth-child(3){transition-delay:0.2s;}
+.fade-up:nth-child(4){transition-delay:0.3s;}
+.fade-up:nth-child(5){transition-delay:0.4s;}
+.fade-up:nth-child(6){transition-delay:0.5s;}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:900px){
+  .stats-bar{grid-template-columns:repeat(3,1fr);}
+  .dest-grid{grid-template-columns:1fr;}
+  .inc-grid{grid-template-columns:1fr;}
+  .timeline{padding-left:50px;}
+  .timeline::before{left:18px;}
+  .tl-dot{left:-38px;}
+}
+@media(max-width:768px){
+  nav ul{display:none;position:absolute;top:70px;left:0;right:0;background:rgba(10,22,40,0.98);flex-direction:column;padding:1rem;border-bottom:1px solid rgba(255,255,255,0.1);}
+  nav ul.open{display:flex;}
+  .hamburger{display:block;}
+  .stats-bar{grid-template-columns:repeat(2,1fr);gap:0.8rem;}
+  .fl-leg{grid-template-columns:1fr;text-align:center;}
+  .fl-dest{text-align:center;}
+  section{padding:4rem 1.2rem;}
+  .intro-card{padding:2rem;}
+  .countdown{gap:2rem;}
+  .cd-item .num{font-size:2rem;}
+  .timeline{padding-left:40px;}
+  .timeline::before{left:14px;}
+  .tl-dot{left:-30px;width:14px;height:14px;}
+  .tl-card{padding:1.5rem;}
+  #main-map{height:400px;}
+  .hotel-minimap,.tl-minimap{display:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="top" id="navbar">
+  <div class="nav-logo">
+    <span class="icon">&#127468;&#127479;</span>
+    <div><span class="text">MORREL FAMILY</span><span class="sub">Greece 2026</span></div>
+  </div>
+  <button class="hamburger" onclick="document.querySelector('nav ul').classList.toggle('open')">&#9776;</button>
+  <ul>
+    <li><a href="#top">Home</a></li>
+    <li><a href="#map">Map</a></li>
+    <li><a href="#destinations">Places</a></li>
+    <li><a href="#itinerary">Itinerary</a></li>
+    <li><a href="#flights">Flights</a></li>
+    <li><a href="#hotels">Hotels</a></li>
+    <li><a href="#cruise">Cruise</a></li>
+    <li><a href="#included">Details</a></li>
+    <li><a href="#payment">Payment</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="hero-bg"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">The Morrel Family Presents</div>
+    <h1><span class="outline">Greece</span> <span class="gold">2026</span></h1>
+    <p class="tagline">A dream journey for Yaya &mdash; from Athens to the Aegean Islands</p>
+    <div class="dates-pill">
+      <span><span class="accent">June 10</span> Departure</span>
+      <div class="divider"></div>
+      <span><span class="accent">13</span> Days</span>
+      <div class="divider"></div>
+      <span><span class="accent">June 22</span> Return</span>
+    </div>
+    <div class="hero-cta">
+      <a href="#itinerary" class="btn btn-gold">Explore the Journey</a>
+      <a href="#map" class="btn btn-outline">View the Route</a>
+    </div>
+  </div>
+  <div class="hero-scroll"><span>Scroll</span><div class="line"></div></div>
+</section>
+
+<!-- COUNTDOWN -->
+<div class="countdown" id="countdown">
+  <div class="cd-item"><div class="num" id="cd-d">--</div><div class="lbl">Days</div></div>
+  <div class="cd-item"><div class="num" id="cd-h">--</div><div class="lbl">Hours</div></div>
+  <div class="cd-item"><div class="num" id="cd-m">--</div><div class="lbl">Minutes</div></div>
+  <div class="cd-item"><div class="num" id="cd-s">--</div><div class="lbl">Seconds</div></div>
+</div>
+
+<!-- INTRO -->
+<section class="intro-section">
+  <div class="container">
+    <div class="intro-card fade-up">
+      <p>After a lot of planning and coordination, we believe that we finally have a trip scheduled with most of the key elements booked. This is something that <strong>Yaya (Tina/Mom)</strong> has dreamed about for a long time &mdash; and we are so happy to finally make it happen. There is enough certainty that we can share with the grandsons. Of course, there is never 100% certainty, as emergencies and world events can always interfere with international travel.</p>
+      <p style="margin-top:1rem;">We are paying for plane tickets, trip insurance, hotel rooms, cruises, and guided tours. Hotels all include breakfast &mdash; you're each on your own for other meals. We suggest one late lunch each day and then a heavy snack in the evening: yogurt, cheese, bread, wine, olives&hellip; the Greek way.</p>
+      <div class="sig">With love, from the whole family &#10084;</div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section style="background:var(--sand);padding:4rem 2rem 2rem">
+  <div class="container">
+    <div class="stats-bar">
+      <div class="stat-item fade-up"><div class="s-icon">&#9992;&#65039;</div><div class="s-num">4</div><div class="s-label">Flights</div></div>
+      <div class="stat-item fade-up"><div class="s-icon">&#127962;&#65039;</div><div class="s-num">5</div><div class="s-label">Hotels</div></div>
+      <div class="stat-item fade-up"><div class="s-icon">&#128674;</div><div class="s-num">5</div><div class="s-label">Islands</div></div>
+      <div class="stat-item fade-up"><div class="s-icon">&#127963;&#65039;</div><div class="s-num">6</div><div class="s-label">Guided Tours</div></div>
+      <div class="stat-item fade-up"><div class="s-icon">&#9962;&#65039;</div><div class="s-num">2</div><div class="s-label">Monasteries</div></div>
+      <div class="stat-item fade-up"><div class="s-icon">&#127796;</div><div class="s-num">13</div><div class="s-label">Days</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- MAP -->
+<section class="map-section" id="map">
+  <div class="container">
+    <div class="sec-header">
+      <div class="eyebrow">Your Route</div>
+      <h2>The Journey Across Greece</h2>
+      <p>From ancient Athens through towering Meteora, across the Aegean Sea to mythical islands, and on to Samos</p>
+    </div>
+    <div class="map-wrap fade-up">
+      <div id="main-map"></div>
+    </div>
+    <div class="map-legend">
+      <div class="map-legend-item"><div class="dot" style="background:#e74c3c"></div>Athens &amp; Mainland</div>
+      <div class="map-legend-item"><div class="dot" style="background:#27ae60"></div>Meteora</div>
+      <div class="map-legend-item"><div class="dot" style="background:#2471a3"></div>Cruise Islands</div>
+      <div class="map-legend-item"><div class="dot" style="background:#f39c12"></div>Samos</div>
+      <div class="map-legend-item"><div class="dot" style="background:#8e44ad"></div>Rafina</div>
+    </div>
+  </div>
+</section>
+
+<!-- DESTINATIONS -->
+<section class="dest-section" id="destinations">
+  <div class="container">
+    <div class="sec-header">
+      <div class="eyebrow">Discover</div>
+      <h2>Places We'll Explore</h2>
+      <p>Ancient ruins, towering monasteries, volcanic islands, and turquoise seas</p>
+      <div class="accent-line"></div>
+    </div>
+
+    <div class="dest-grid">
+
+      <div class="dest-card fade-up">
+        <div class="dest-img"><div class="gradient-art dest-athens"><span class="emoji-icon">&#127963;&#65039;</span></div><div class="overlay"><h3>Athens &amp; the Acropolis</h3><div class="sub">Days 2-3, 5 &bull; Birthplace of Democracy</div></div></div>
+        <div class="dest-body">
+          <p>The cradle of Western civilization. Athens has been continuously inhabited for over 3,400 years. The <strong>Acropolis</strong> rises 490 feet above the city, crowned by the <strong>Parthenon</strong> &mdash; built in 447 B.C. as a temple to the goddess Athena. You'll walk the same marble steps as Socrates and Plato. Below, the <strong>Agora</strong> was the heart of ancient Athenian public life, where democracy was born. The <strong>Panathinaikon Stadium</strong>, built entirely of white marble, hosted the first modern Olympic Games in 1896.</p>
+          <p>Don't miss the <strong>Erechtheion's</strong> Porch of the Caryatids &mdash; six maiden columns that have stood for 2,400 years. At the <strong>Tomb of the Unknown Soldier</strong>, watch the Evzones (presidential guards) in their traditional foustanella uniforms perform the ceremonial changing of the guard.</p>
+          <div class="dest-facts">
+            <span class="dest-fact">&#127963;&#65039; Parthenon (447 B.C.)</span>
+            <span class="dest-fact">&#127941; 1896 Olympic Stadium</span>
+            <span class="dest-fact">&#128218; National Library</span>
+            <span class="dest-fact">&#128110; Evzones Guards</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dest-card fade-up">
+        <div class="dest-img"><div class="gradient-art dest-corinth"><span class="emoji-icon">&#9961;&#65039;</span></div><div class="overlay"><h3>Ancient Corinth</h3><div class="sub">Day 3 &bull; Where St. Paul Preached</div></div></div>
+        <div class="dest-body">
+          <p>One of the great cities of antiquity. <strong>Ancient Corinth</strong> controlled trade between mainland Greece and the Peloponnese from the 8th century B.C. The <strong>Corinth Canal</strong> &mdash; 4 miles long but only 80 feet wide &mdash; was carved through solid rock to connect the Adriatic and Aegean seas. It's a jaw-dropping engineering feat.</p>
+          <p>The <strong>Temple of Apollo</strong> (550 B.C.) still stands with seven massive Doric columns. This is where the Apostle <strong>St. Paul</strong> lived for 18 months and wrote his famous letters to the Corinthians. The ancient agora (marketplace) and Roman baths reveal layers of civilization spanning over a thousand years.</p>
+          <div class="dest-facts">
+            <span class="dest-fact">&#9961;&#65039; Corinth Canal</span>
+            <span class="dest-fact">&#127963;&#65039; Temple of Apollo</span>
+            <span class="dest-fact">&#9962;&#65039; St. Paul's Basilica</span>
+            <span class="dest-fact">&#127963;&#65039; Archaeological Museum</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dest-card fade-up">
+        <div class="dest-img"><div class="gradient-art dest-meteora"><span class="emoji-icon">&#9968;&#65039;</span></div><div class="overlay"><h3>Meteora</h3><div class="sub">Days 4-5 &bull; Monasteries in the Sky</div></div></div>
+        <div class="dest-body">
+          <p>The word <strong>Meteora</strong> means &ldquo;suspended in air&rdquo; &mdash; and that's exactly what you'll see. Massive sandstone pillars rise over 1,000 feet into the sky, topped by monasteries built in the 14th century by monks seeking isolation from the world. They hauled materials up in baskets and nets. Today, six monasteries remain active.</p>
+          <p>You'll visit <strong>two of the six Holy Monasteries</strong> &mdash; likely <strong>Mega Meteoron</strong> (the largest, founded 1340) and <strong>St. Stephen's</strong> (the most accessible, with stunning valley views). Before that, the <strong>Byzantine Church of the Assumption</strong> in Kalambaka dates to the 4th-5th century. End the day at a panoramic viewpoint for a <strong>sunset over the Pindos mountains</strong> that you'll never forget.</p>
+          <div class="dest-facts">
+            <span class="dest-fact">&#9968;&#65039; 1,000 ft sandstone pillars</span>
+            <span class="dest-fact">&#9962;&#65039; 6 active monasteries</span>
+            <span class="dest-fact">&#127749; UNESCO World Heritage</span>
+            <span class="dest-fact">&#127751; Legendary sunsets</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dest-card fade-up">
+        <div class="dest-img"><div class="gradient-art dest-mykonos"><span class="emoji-icon">&#127965;&#65039;</span></div><div class="overlay"><h3>Mykonos</h3><div class="sub">Day 6 &bull; 6-11 PM &bull; The Island of the Winds</div></div></div>
+        <div class="dest-body">
+          <p>Iconic whitewashed buildings, narrow marble streets, and vibrant bougainvillea. <strong>Mykonos Town</strong> (Chora) is one of the most photographed places in Greece. The famous <strong>windmills of Kato Mili</strong> date to the 16th century and once ground grain from ships. <strong>Little Venice</strong> &mdash; a row of 18th-century houses built right at the water's edge &mdash; is magical at sunset.</p>
+          <p>According to myth, Mykonos was named after Apollo's grandson. The island was formed from the petrified bodies of giants slain by Hercules. With 5 hours on the island (6-11 PM), you'll catch it at its most beautiful &mdash; golden hour through twilight.</p>
+          <div class="dest-facts">
+            <span class="dest-fact">&#127788;&#65039; Famous Windmills</span>
+            <span class="dest-fact">&#127751; Little Venice</span>
+            <span class="dest-fact">&#127961;&#65039; Chora Old Town</span>
+            <span class="dest-fact">&#128247; Most photographed</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dest-card fade-up">
+        <div class="dest-img"><div class="gradient-art dest-kusadasi"><span class="emoji-icon">&#127963;&#65039;</span></div><div class="overlay"><h3>Kusadasi &amp; Ephesus</h3><div class="sub">Day 7 &bull; 7 AM-1 PM &bull; Turkey</div></div></div>
+        <div class="dest-body">
+          <p>A brief crossing into <strong>Turkey</strong> to visit one of the best-preserved ancient cities in the world. <strong>Ephesus</strong> was once the second-largest city in the Roman Empire (250,000 people). The <strong>Library of Celsus</strong> (117 A.D.) is an architectural wonder &mdash; its fa&ccedil;ade stands 55 feet tall. The <strong>Great Theatre</strong> seated 25,000 and is where St. Paul once preached.</p>
+          <p>Ephesus was home to the <strong>Temple of Artemis</strong> &mdash; one of the Seven Wonders of the Ancient World. Walking its marble streets, you'll see ancient toilets, mosaic floors, and a sophisticated water system that rivals modern engineering. Shore excursions are available from the cruise.</p>
+          <div class="dest-facts">
+            <span class="dest-fact">&#127963;&#65039; Library of Celsus</span>
+            <span class="dest-fact">&#127919; 7 Wonders (Artemis Temple)</span>
+            <span class="dest-fact">&#128218; Great Theatre (25,000 seats)</span>
+            <span class="dest-fact">&#128675; Roman marble streets</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dest-card fade-up">
+        <div class="dest-img"><div class="gradient-art dest-patmos"><span class="emoji-icon">&#128216;</span></div><div class="overlay"><h3>Patmos</h3><div class="sub">Day 7 &bull; 4:30-9:30 PM &bull; Island of the Apocalypse</div></div></div>
+        <div class="dest-body">
+          <p>One of the holiest islands in Christianity. It was here, in a small <strong>Cave of the Apocalypse</strong>, that <strong>St. John the Theologian</strong> received his visions and wrote the <strong>Book of Revelation</strong> around 95 A.D. The cave is now a chapel &mdash; you can see the rock shelf where he rested his head and the crack in the ceiling through which God's voice is said to have spoken.</p>
+          <p>Above it stands the fortress-like <strong>Monastery of St. John</strong> (1088 A.D.), which looks like a medieval castle and contains priceless manuscripts, icons, and frescoes. The island's main town, <strong>Chora</strong>, is a UNESCO World Heritage Site of immaculate white houses.</p>
+          <div class="dest-facts">
+            <span class="dest-fact">&#128216; Book of Revelation</span>
+            <span class="dest-fact">&#9962;&#65039; Cave of the Apocalypse</span>
+            <span class="dest-fact">&#127963;&#65039; Monastery (1088 A.D.)</span>
+            <span class="dest-fact">&#127749; UNESCO Heritage</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dest-card fade-up">
+        <div class="dest-img"><div class="gradient-art dest-rhodes"><span class="emoji-icon">&#9876;&#65039;</span></div><div class="overlay"><h3>Rhodes</h3><div class="sub">Day 8 &bull; 7 AM-6 PM &bull; Island of the Knights</div></div></div>
+        <div class="dest-body">
+          <p>With 11 full hours, Rhodes is your longest island stop. The <strong>Medieval Old Town</strong> is the largest inhabited medieval town in Europe &mdash; a UNESCO World Heritage Site enclosed by 2.5 miles of massive walls. Walk the <strong>Street of the Knights</strong>, one of the best-preserved medieval streets anywhere, leading to the <strong>Palace of the Grand Master</strong>.</p>
+          <p>The <strong>Colossus of Rhodes</strong> &mdash; another of the Seven Wonders &mdash; once straddled the harbor entrance (destroyed by earthquake in 226 B.C.). Today Mandraki Harbor is guarded by two bronze deer statues. The town blends Byzantine churches, Ottoman mosques, and Crusader architecture in a labyrinth of cobblestone alleys.</p>
+          <div class="dest-facts">
+            <span class="dest-fact">&#9876;&#65039; Palace of Grand Master</span>
+            <span class="dest-fact">&#127919; 7 Wonders (Colossus)</span>
+            <span class="dest-fact">&#127961;&#65039; Medieval Old Town</span>
+            <span class="dest-fact">&#128347; 11 hours to explore</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dest-card fade-up">
+        <div class="dest-img"><div class="gradient-art dest-crete"><span class="emoji-icon">&#128002;</span></div><div class="overlay"><h3>Crete</h3><div class="sub">Day 9 &bull; 7 AM-12 PM &bull; Birthplace of Minoan Civilization</div></div></div>
+        <div class="dest-body">
+          <p>Greece's largest island and the cradle of <strong>Minoan civilization</strong> &mdash; Europe's first advanced society (2700-1450 B.C.). The <strong>Palace of Knossos</strong>, home of the mythical <strong>Minotaur's Labyrinth</strong>, was a four-story complex with 1,300 rooms, indoor plumbing, and the oldest throne in Europe.</p>
+          <p>Crete is where <strong>Zeus</strong> was born (hidden in the Dictaean Cave to protect him from his father Kronos). The <strong>Heraklion Archaeological Museum</strong> holds treasures that rival anything in Athens. In 5 hours, you can explore the vibrant harbor town or take a shore excursion to Knossos &mdash; one of the most important archaeological sites in the world.</p>
+          <div class="dest-facts">
+            <span class="dest-fact">&#128002; Minotaur's Labyrinth</span>
+            <span class="dest-fact">&#127963;&#65039; Palace of Knossos</span>
+            <span class="dest-fact">&#9889; Birthplace of Zeus</span>
+            <span class="dest-fact">&#127749; Oldest civilization in Europe</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dest-card fade-up">
+        <div class="dest-img"><div class="gradient-art dest-santorini"><span class="emoji-icon">&#127773;</span></div><div class="overlay"><h3>Santorini</h3><div class="sub">Day 9 &bull; 4:30-9:30 PM &bull; The Volcanic Jewel</div></div></div>
+        <div class="dest-body">
+          <p>Possibly the most stunning island in the world. <strong>Santorini</strong> is actually the rim of a volcanic <strong>caldera</strong> &mdash; the center of the island collapsed into the sea after a massive eruption around 1600 B.C. (one of the largest in human history, and possibly the origin of the <strong>Atlantis legend</strong>). The cliff-top villages of <strong>Oia</strong> and <strong>Fira</strong> cascade down 1,000-foot cliffs in a cascade of blue domes and white walls.</p>
+          <p>Your 4:30-9:30 PM timing is <em>perfect</em> &mdash; you'll be there for the famous <strong>Santorini sunset</strong>, widely considered the most beautiful in the world. The sky turns gold, pink, and purple over the caldera. Visit a rooftop taverna, taste local wines from volcanic soil, and soak in views you'll remember forever.</p>
+          <div class="dest-facts">
+            <span class="dest-fact">&#127773; World's best sunset</span>
+            <span class="dest-fact">&#127755; Volcanic caldera</span>
+            <span class="dest-fact">&#127856; Volcanic wines</span>
+            <span class="dest-fact">&#128161; Atlantis legend</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dest-card fade-up">
+        <div class="dest-img"><div class="gradient-art dest-samos"><span class="emoji-icon">&#127796;</span></div><div class="overlay"><h3>Samos</h3><div class="sub">Days 10-12 &bull; Island of Pythagoras</div></div></div>
+        <div class="dest-body">
+          <p>The birthplace of the mathematician <strong>Pythagoras</strong> (yes, a&sup2; + b&sup2; = c&sup2;) and a lush, green island of forests, vineyards, and turquoise coves. Samos sits just over a mile from the Turkish coast and was once one of the wealthiest and most powerful islands in ancient Greece.</p>
+          <p>Your full-day guided tour includes the <strong>Temple of Hera</strong> (Heraion) &mdash; one of the largest temples ever attempted in ancient Greece (only one column still stands). The <strong>Tunnel of Efpalinus</strong> is an extraordinary engineering feat &mdash; a 3,400-foot aqueduct tunnel carved through a mountain from both sides in the 6th century B.C., meeting perfectly in the middle. You'll also visit the <strong>Monastery of Megali Panagia</strong> and the <strong>Pythagoreion Archaeological Museum</strong>. The town of <strong>Pythagoreion</strong> itself is a charming UNESCO World Heritage Site.</p>
+          <div class="dest-facts">
+            <span class="dest-fact">&#128208; Birthplace of Pythagoras</span>
+            <span class="dest-fact">&#127963;&#65039; Temple of Hera</span>
+            <span class="dest-fact">&#128295; Tunnel of Efpalinus</span>
+            <span class="dest-fact">&#127749; UNESCO Heritage</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ITINERARY TIMELINE -->
+<section class="timeline-section" id="itinerary">
+  <div class="container">
+    <div class="sec-header">
+      <div class="eyebrow">Day by Day</div>
+      <h2>Your Complete Itinerary</h2>
+      <p>Every flight, tour, transfer, and sunset &mdash; mapped out</p>
+      <div class="accent-line"></div>
+    </div>
+
+    <div class="timeline">
+
+      <!-- DAY 1 -->
+      <div class="tl-card fade-up">
+        <div class="tl-dot travel"></div>
+        <div class="tl-top"><div><div class="tl-day">Day 1</div><div class="tl-date">Wednesday, June 10</div></div><span class="tl-badge bg-travel">Travel</span></div>
+        <div class="tl-title">Fly to Athens</div>
+        <div class="tl-body"><ul>
+          <li><span class="ic">&#128347;</span><span><span class="time-chip">9:50 AM</span> Depart Jacksonville (AA #2865)</span></li>
+          <li><span class="ic">&#128347;</span><span><span class="time-chip">12:03 PM</span> Arrive Philadelphia &mdash; layover</span></li>
+          <li><span class="ic">&#128347;</span><span><span class="time-chip">4:35 PM</span> Depart PHL (AA #0758) &mdash; overnight flight to Athens</span></li>
+        </ul></div>
+      </div>
+
+      <!-- DAY 2 -->
+      <div class="tl-card fade-up">
+        <div class="tl-dot athens"></div>
+        <div class="tl-top"><div><div class="tl-day">Day 2</div><div class="tl-date">Thursday, June 11</div></div><span class="tl-badge bg-athens">Athens</span></div>
+        <div class="tl-title">Arrive Athens &mdash; Acropolis Sightseeing</div>
+        <div class="tl-body"><ul>
+          <li><span class="ic">&#9992;&#65039;</span><span><span class="time-chip">9:10 AM</span> Arrive Athens &mdash; private transfer to Royal Olympic Hotel</span></li>
+          <li><span class="ic">&#128101;</span><span><span class="time-chip">3:00 PM</span> Meet guide &amp; driver in hotel lobby (~5 hour tour)</span></li>
+          <li><span class="ic">&#127963;&#65039;</span><span><span class="hl">Acropolis</span> &mdash; Parthenon, Propylaea, Temple of Athena Nike, Erechtheion</span></li>
+          <li><span class="ic">&#127941;</span><span><span class="hl">Panathinaikon Stadium</span> &mdash; first modern Olympics (1896)</span></li>
+          <li><span class="ic">&#128110;</span><span><span class="hl">Tomb of the Unknown Soldier</span> &amp; Parliament / Constitution Square</span></li>
+          <li><span class="ic">&#127962;&#65039;</span><span>Drive along Panepistimiou Ave: Cathedral, Academy, University, National Library</span></li>
+        </ul></div>
+        <div class="tl-included">&#10003; Private guide &bull; A/C vehicle &bull; Acropolis &amp; museum entrance fees</div>
+        <div class="tl-hotel">&#127962;&#65039; Royal Olympic Hotel, Athens</div>
+      </div>
+
+      <!-- DAY 3 -->
+      <div class="tl-card fade-up">
+        <div class="tl-dot athens"></div>
+        <div class="tl-top"><div><div class="tl-day">Day 3</div><div class="tl-date">Friday, June 12</div></div><span class="tl-badge bg-athens">Athens / Corinth</span></div>
+        <div class="tl-title">Ancient Corinth &amp; National Museum</div>
+        <div class="tl-body"><ul>
+          <li><span class="ic">&#128347;</span><span><span class="time-chip">8:30 AM</span> Meet guide &amp; driver in lobby (~5.5 hr tour)</span></li>
+          <li><span class="ic">&#127754;</span><span>Scenic coastal drive to the <span class="hl">Corinth Canal</span></span></li>
+          <li><span class="ic">&#127963;&#65039;</span><span><span class="hl">Ancient Corinth</span> &mdash; Temple of Apollo, Roman agora, St. Paul's basilica</span></li>
+          <li><span class="ic">&#127963;&#65039;</span><span>Return to Athens &mdash; <span class="hl">National Archaeological Museum</span> (closes 8 PM Fridays)</span></li>
+        </ul></div>
+        <div class="tl-included">&#10003; Private guide &bull; A/C vehicle &bull; entrance fees</div>
+        <div class="tl-hotel">&#127962;&#65039; Royal Olympic Hotel, Athens</div>
+      </div>
+
+      <!-- DAY 4 -->
+      <div class="tl-card fade-up">
+        <div class="tl-dot meteora"></div>
+        <div class="tl-top"><div><div class="tl-day">Day 4</div><div class="tl-date">Saturday, June 13</div></div><span class="tl-badge bg-meteora">Meteora</span></div>
+        <div class="tl-title">Drive to Meteora &mdash; Church &amp; Sunset</div>
+        <div class="tl-body"><ul>
+          <li><span class="ic">&#128347;</span><span><span class="time-chip">8:30 AM</span> Check out of Athens &mdash; depart for Kalambaka with guide</span></li>
+          <li><span class="ic">&#9962;&#65039;</span><span><span class="hl">Byzantine Church of the Assumption</span> (4th-5th century)</span></li>
+          <li><span class="ic">&#127751;</span><span><span class="hl">Sunset experience</span> at Meteora panoramic viewpoint</span></li>
+        </ul></div>
+        <div class="tl-included">&#10003; Private guide &bull; A/C vehicle &bull; entrance fees &bull; tolls &bull; guide/driver expenses</div>
+        <div class="tl-hotel">&#127962;&#65039; Monastiri Guesthouse, Kalambaka</div>
+      </div>
+
+      <!-- DAY 5 -->
+      <div class="tl-card fade-up">
+        <div class="tl-dot meteora"></div>
+        <div class="tl-top"><div><div class="tl-day">Day 5</div><div class="tl-date">Sunday, June 14</div></div><span class="tl-badge bg-meteora">Meteora</span></div>
+        <div class="tl-title">Meteora Monasteries &amp; Return to Athens</div>
+        <div class="tl-body"><ul>
+          <li><span class="ic">&#128347;</span><span><span class="time-chip">9:00 AM</span> Comprehensive tour of Meteora</span></li>
+          <li><span class="ic">&#9962;&#65039;</span><span>Visit <span class="hl">2 of the 6 Holy Monasteries</span> (Mega Meteoron &amp; St. Stephen's or Rousanos &amp; Varlaam)</span></li>
+          <li><span class="ic">&#128663;</span><span>Return drive to Athens (~4 hours)</span></li>
+        </ul></div>
+        <div class="tl-included">&#10003; Monastery entrance fees included</div>
+        <div class="tl-hotel">&#127962;&#65039; Royal Olympic Hotel, Athens</div>
+      </div>
+
+      <!-- DAY 6 -->
+      <div class="tl-card fade-up">
+        <div class="tl-dot cruise"></div>
+        <div class="tl-top"><div><div class="tl-day">Day 6</div><div class="tl-date">Monday, June 15</div></div><span class="tl-badge bg-cruise">Cruise Begins</span></div>
+        <div class="tl-title">Board Cruise &mdash; Mykonos Evening</div>
+        <div class="tl-body"><ul>
+          <li><span class="ic">&#128347;</span><span><span class="time-chip">8:30 AM</span> Private transfer to Lavrion port</span></li>
+          <li><span class="ic">&#128674;</span><span>Board <span class="hl">Celestyal Cruise</span> &mdash; Iconic Greek Islands (4 nights)</span></li>
+          <li><span class="ic">&#128347;</span><span><span class="time-chip">1:00 PM</span> Cruise departs</span></li>
+          <li><span class="ic">&#127965;&#65039;</span><span><span class="time-chip">6-11 PM</span> <span class="hl">Mykonos</span> &mdash; windmills, Little Venice, sunset (5 hrs)</span></li>
+        </ul></div>
+      </div>
+
+      <!-- DAY 7 -->
+      <div class="tl-card fade-up">
+        <div class="tl-dot cruise"></div>
+        <div class="tl-top"><div><div class="tl-day">Day 7</div><div class="tl-date">Tuesday, June 16</div></div><span class="tl-badge bg-cruise">Cruise</span></div>
+        <div class="tl-title">Kusadasi (Ephesus) &amp; Patmos</div>
+        <div class="tl-body"><ul>
+          <li><span class="ic">&#127963;&#65039;</span><span><span class="time-chip">7AM-1PM</span> <span class="hl">Kusadasi, Turkey</span> &mdash; gateway to Ephesus (6 hrs)</span></li>
+          <li><span class="ic">&#128216;</span><span><span class="time-chip">4:30-9:30PM</span> <span class="hl">Patmos</span> &mdash; Cave of the Apocalypse, Monastery of St. John (5 hrs)</span></li>
+        </ul></div>
+      </div>
+
+      <!-- DAY 8 -->
+      <div class="tl-card fade-up">
+        <div class="tl-dot cruise"></div>
+        <div class="tl-top"><div><div class="tl-day">Day 8</div><div class="tl-date">Wednesday, June 17</div></div><span class="tl-badge bg-cruise">Cruise</span></div>
+        <div class="tl-title">Rhodes &mdash; Full Day</div>
+        <div class="tl-body"><ul>
+          <li><span class="ic">&#9876;&#65039;</span><span><span class="time-chip">7AM-6PM</span> <span class="hl">Rhodes</span> &mdash; 11 hours! Medieval Old Town, Palace of the Grand Master, Street of the Knights</span></li>
+        </ul></div>
+      </div>
+
+      <!-- DAY 9 -->
+      <div class="tl-card fade-up">
+        <div class="tl-dot cruise"></div>
+        <div class="tl-top"><div><div class="tl-day">Day 9</div><div class="tl-date">Thursday, June 18</div></div><span class="tl-badge bg-cruise">Cruise</span></div>
+        <div class="tl-title">Crete &amp; Santorini Sunset</div>
+        <div class="tl-body"><ul>
+          <li><span class="ic">&#128002;</span><span><span class="time-chip">7AM-12PM</span> <span class="hl">Crete</span> &mdash; Palace of Knossos, Minoan civilization (5 hrs)</span></li>
+          <li><span class="ic">&#127773;</span><span><span class="time-chip">4:30-9:30PM</span> <span class="hl">Santorini</span> &mdash; caldera views, blue domes, legendary sunset (5 hrs)</span></li>
+        </ul></div>
+      </div>
+
+      <!-- DAY 10 -->
+      <div class="tl-card fade-up">
+        <div class="tl-dot samos"></div>
+        <div class="tl-top"><div><div class="tl-day">Day 10</div><div class="tl-date">Friday, June 19</div></div><span class="tl-badge bg-samos">Samos</span></div>
+        <div class="tl-title">Cruise Ends &mdash; Fly to Samos</div>
+        <div class="tl-body"><ul>
+          <li><span class="ic">&#128347;</span><span><span class="time-chip">6:00 AM</span> Arrive Lavrion port</span></li>
+          <li><span class="ic">&#128347;</span><span><span class="time-chip">7:00 AM</span> Meet driver &mdash; transfer to Athens airport</span></li>
+          <li><span class="ic">&#9992;&#65039;</span><span>Fly to Samos &mdash; private transfer to resort</span></li>
+          <li><span class="ic">&#127796;</span><span>Relax at <span class="hl">Doryssa Seaside Resort</span> near Pythagoreion</span></li>
+        </ul></div>
+        <div class="tl-hotel">&#127962;&#65039; Doryssa Seaside Resort, Samos</div>
+      </div>
+
+      <!-- DAY 11 -->
+      <div class="tl-card fade-up">
+        <div class="tl-dot samos"></div>
+        <div class="tl-top"><div><div class="tl-day">Day 11</div><div class="tl-date">Saturday, June 20</div></div><span class="tl-badge bg-samos">Samos</span></div>
+        <div class="tl-title">Samos Island Tour</div>
+        <div class="tl-body"><ul>
+          <li><span class="ic">&#128347;</span><span><span class="time-chip">10:00 AM</span> Meet guide &amp; driver for full-day tour (~6 hrs)</span></li>
+          <li><span class="ic">&#127963;&#65039;</span><span><span class="hl">Temple of Hera</span> &mdash; one of the largest ancient Greek temples</span></li>
+          <li><span class="ic">&#9962;&#65039;</span><span><span class="hl">Monastery of Megali Panagia</span></span></li>
+          <li><span class="ic">&#127963;&#65039;</span><span><span class="hl">Pythagoreion Archaeological Museum</span></span></li>
+          <li><span class="ic">&#128295;</span><span><span class="hl">Tunnel of Efpalinus</span> &mdash; 6th century B.C. engineering marvel</span></li>
+        </ul></div>
+        <div class="tl-included">&#10003; Private guide &bull; A/C vehicle &bull; all entrance fees</div>
+        <div class="tl-hotel">&#127962;&#65039; Doryssa Seaside Resort, Samos</div>
+      </div>
+
+      <!-- DAY 12 -->
+      <div class="tl-card fade-up">
+        <div class="tl-dot rafina"></div>
+        <div class="tl-top"><div><div class="tl-day">Day 12</div><div class="tl-date">Sunday, June 21</div></div><span class="tl-badge bg-rafina">Samos / Rafina</span></div>
+        <div class="tl-title">Church &amp; Fly Back to Athens</div>
+        <div class="tl-body"><ul>
+          <li><span class="ic">&#9962;&#65039;</span><span>Morning: Attend church in Samos (arrange independently)</span></li>
+          <li><span class="ic">&#128347;</span><span><span class="time-chip">1:00 PM</span> Private transfer to Samos airport</span></li>
+          <li><span class="ic">&#128347;</span><span><span class="time-chip">3:10 PM</span> Flight to Athens</span></li>
+          <li><span class="ic">&#128652;</span><span>At Athens airport, take <span class="hl">Avra Hotel free shuttle</span></span></li>
+        </ul></div>
+        <div class="tl-hotel">&#127962;&#65039; Avra Hotel, Rafina</div>
+      </div>
+
+      <!-- DAY 13 -->
+      <div class="tl-card fade-up">
+        <div class="tl-dot travel"></div>
+        <div class="tl-top"><div><div class="tl-day">Day 13</div><div class="tl-date">Monday, June 22</div></div><span class="tl-badge bg-travel">Home</span></div>
+        <div class="tl-title">Fly Home to Jacksonville</div>
+        <div class="tl-body"><ul>
+          <li><span class="ic">&#127860;</span><span>Breakfast, check out &mdash; hotel shuttle to airport</span></li>
+          <li><span class="ic">&#128347;</span><span><span class="time-chip">11:15 AM</span> Depart Athens (AA #0161)</span></li>
+          <li><span class="ic">&#128347;</span><span><span class="time-chip">3:00 PM</span> Arrive Chicago O'Hare &mdash; layover</span></li>
+          <li><span class="ic">&#128347;</span><span><span class="time-chip">7:09 PM</span> Depart Chicago (AA #2096)</span></li>
+          <li><span class="ic">&#127968;</span><span><span class="time-chip">10:37 PM</span> <span class="hl">Home in Jacksonville!</span></span></li>
+        </ul></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- FLIGHTS -->
+<section class="flights-section" id="flights">
+  <div class="container">
+    <div class="sec-header">
+      <div class="eyebrow">Transportation</div>
+      <h2>Flight Details</h2>
+      <p>American Airlines &bull; Group Reservations: 800-221-2255</p>
+      <div class="accent-line"></div>
+    </div>
+
+    <div class="flight-card fade-up">
+      <h3>&#127749; Outbound &mdash; June 10</h3>
+      <div class="fl-leg">
+        <div><div class="fl-city">Jacksonville</div><div class="fl-code">JAX</div><div class="fl-time">9:50 AM</div></div>
+        <div class="fl-mid"><span class="plane">&#9992;&#65039;</span><div class="fl-line"></div><span class="fl-num">AA #2865</span></div>
+        <div class="fl-dest"><div class="fl-city">Philadelphia</div><div class="fl-code">PHL</div><div class="fl-time">12:03 PM</div></div>
+      </div>
+      <div class="fl-leg">
+        <div><div class="fl-city">Philadelphia</div><div class="fl-code">PHL</div><div class="fl-time">4:35 PM</div></div>
+        <div class="fl-mid"><span class="plane">&#9992;&#65039;</span><div class="fl-line"></div><span class="fl-num">AA #0758</span></div>
+        <div class="fl-dest"><div class="fl-city">Athens</div><div class="fl-code">ATH</div><div class="fl-time">9:10 AM +1</div></div>
+      </div>
+    </div>
+
+    <div class="flight-card fade-up">
+      <h3>&#127968; Return &mdash; June 22</h3>
+      <div class="fl-leg">
+        <div><div class="fl-city">Athens</div><div class="fl-code">ATH</div><div class="fl-time">11:15 AM</div></div>
+        <div class="fl-mid"><span class="plane">&#9992;&#65039;</span><div class="fl-line"></div><span class="fl-num">AA #0161</span></div>
+        <div class="fl-dest"><div class="fl-city">Chicago O'Hare</div><div class="fl-code">ORD</div><div class="fl-time">3:00 PM</div></div>
+      </div>
+      <div class="fl-leg">
+        <div><div class="fl-city">Chicago O'Hare</div><div class="fl-code">ORD</div><div class="fl-time">7:09 PM</div></div>
+        <div class="fl-mid"><span class="plane">&#9992;&#65039;</span><div class="fl-line"></div><span class="fl-num">AA #2096</span></div>
+        <div class="fl-dest"><div class="fl-city">Jacksonville</div><div class="fl-code">JAX</div><div class="fl-time">10:37 PM</div></div>
+      </div>
+    </div>
+
+    <div class="bag-box fade-up">
+      <h4>&#128188; Baggage Allowance</h4>
+      <ul>
+        <li>&#128188; <strong>Checked:</strong> 1 bag per person (50 lbs, 62 linear inches)</li>
+        <li>&#127890; <strong>Carry-on:</strong> 1 bag (45 linear inches) + 1 personal item</li>
+        <li>&#9992;&#65039; <strong>Athens-Samos:</strong> 1 checked bag up to 50 lbs &mdash; carry-on policy TBD</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- HOTELS -->
+<section class="hotels-section" id="hotels">
+  <div class="container">
+    <div class="sec-header">
+      <div class="eyebrow">Accommodations</div>
+      <h2>Where We're Staying</h2>
+      <p>All hotels include breakfast. Climate Resilience Tax paid directly at check-in.</p>
+      <div class="accent-line"></div>
+    </div>
+
+    <div class="hotel-grid">
+      <div class="hotel-card fade-up"><div class="hotel-top ht-athens"></div><div class="hotel-body"><h3>Royal Olympic Hotel</h3><div class="loc">Athens, Greece</div><div class="hotel-meta"><div><span class="nights-badge">3 nights</span> Jun 11-13 &amp; 14</div><div>&#128719;&#65039; 4 executive rooms (2 double, 2 triple)</div><div>&#127963;&#65039; Views of Temple of Zeus &amp; Acropolis</div></div><div class="hotel-minimap" id="map-athens"></div></div></div>
+
+      <div class="hotel-card fade-up"><div class="hotel-top ht-meteora"></div><div class="hotel-body"><h3>Monastiri Guesthouse</h3><div class="loc">Kalambaka / Meteora</div><div class="hotel-meta"><div><span class="nights-badge">1 night</span> Jun 13</div><div>&#127748; 2 Superior Double (Meteora View)</div><div>&#127946; 2 Superior Triple (Pool View)</div></div><div class="hotel-minimap" id="map-meteora"></div></div></div>
+
+      <div class="hotel-card fade-up"><div class="hotel-top ht-cruise"></div><div class="hotel-body"><h3>Celestyal Cruise</h3><div class="loc">Aegean Sea &mdash; Greek Islands</div><div class="hotel-meta"><div><span class="nights-badge">4 nights</span> Jun 15-18</div><div>&#128674; Iconic Greek Islands itinerary</div><div>&#127965;&#65039; Mykonos, Kusadasi, Patmos, Rhodes, Crete, Santorini</div></div></div></div>
+
+      <div class="hotel-card fade-up"><div class="hotel-top ht-samos"></div><div class="hotel-body"><h3>Doryssa Seaside Resort</h3><div class="loc">Pythagoreion, Samos</div><div class="hotel-meta"><div><span class="nights-badge">2 nights</span> Jun 19-20</div><div>&#127796; 5 rooms, main building, garden view</div><div>&#127958;&#65039; Steps from the Aegean Sea</div></div><div class="hotel-minimap" id="map-samos"></div></div></div>
+
+      <div class="hotel-card fade-up"><div class="hotel-top ht-rafina"></div><div class="hotel-body"><h3>Avra Hotel</h3><div class="loc">Rafina (near Athens airport)</div><div class="hotel-meta"><div><span class="nights-badge">1 night</span> Jun 21</div><div>&#128719;&#65039; 2 quad rooms + 1 double</div><div>&#128652; Free airport shuttle</div></div><div class="hotel-minimap" id="map-rafina"></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CRUISE -->
+<section class="cruise-section" id="cruise">
+  <div class="container">
+    <div class="sec-header">
+      <div class="eyebrow">4 Nights at Sea</div>
+      <h2>The Celestyal Cruise</h2>
+      <p>Sail the Aegean aboard the Celestyal Journey &mdash; from Mykonos to Santorini and everywhere in between</p>
+    </div>
+
+    <!-- Ship Info -->
+    <div class="cruise-ship-card fade-up">
+      <div class="cruise-ship-header">
+        <div class="cruise-ship-icon">&#128674;</div>
+        <div class="cruise-ship-info">
+          <h3>MS Celestyal Journey</h3>
+          <div class="ship-sub">Originally built in 1994 for Holland America Line, this 55,819-ton vessel was refurbished and relaunched by Celestyal in 2023. She carries ~1,400 passengers through the Greek islands with an intimate, all-inclusive feel.</div>
+          <div class="ship-stats">
+            <span class="ship-stat">55,819 GT</span>
+            <span class="ship-stat">~1,400 Guests</span>
+            <span class="ship-stat">5 Cabin Types</span>
+            <span class="ship-stat">7 Restaurants</span>
+            <span class="ship-stat">9 Bars</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Onboard Features -->
+    <div class="sec-header" style="margin-bottom:2rem">
+      <h2 style="font-size:1.8rem">Life Onboard</h2>
+    </div>
+
+    <div class="cruise-features">
+
+      <div class="cruise-feat fade-up">
+        <div class="cf-icon">&#127860;</div>
+        <h4>Dining (7 Restaurants)</h4>
+        <p>From buffet to fine dining &mdash; meals are included in your fare.</p>
+        <ul>
+          <li>&#127860; <strong>The Taverna</strong> &mdash; Main buffet, open for all meals</li>
+          <li>&#127858; <strong>Thalassa</strong> &mdash; Fine dining restaurant</li>
+          <li>&#129472; <strong>The Greek Deli</strong> &mdash; Greek specialties &amp; mezze</li>
+          <li>&#127830; <strong>Grill Seekers</strong> &mdash; Grilled meats &amp; seafood</li>
+          <li>&#127834; <strong>Pink Moon</strong> &mdash; South Asian cuisine</li>
+          <li>&#129362; <strong>Smoked Olive</strong> &mdash; Mediterranean flavors</li>
+          <li>&#127864; <strong>Chef's Table</strong> &mdash; Intimate tasting menus</li>
+        </ul>
+      </div>
+
+      <div class="cruise-feat fade-up">
+        <div class="cf-icon">&#127867;</div>
+        <h4>Bars &amp; Lounges (9 Venues)</h4>
+        <p>From champagne to craft cocktails &mdash; something for every taste.</p>
+        <ul>
+          <li>&#127929; <strong>Martini Piano Bar</strong> &mdash; Live piano &amp; cocktails</li>
+          <li>&#127863; <strong>Grapevine</strong> &mdash; Wine bar</li>
+          <li>&#129379; <strong>Fizz Club</strong> &mdash; Champagne lounge</li>
+          <li>&#127866; <strong>Blue Bar &amp; Lounge</strong> &mdash; Casual drinks</li>
+          <li>&#9749; <strong>Cafe Nation</strong> &mdash; Coffee &amp; pastries</li>
+          <li>&#127864; Plus exclusive suite-guest lounges</li>
+        </ul>
+      </div>
+
+      <div class="cruise-feat fade-up">
+        <div class="cf-icon">&#127917;</div>
+        <h4>Entertainment</h4>
+        <p>Nightly shows, live music, and activities all day long.</p>
+        <ul>
+          <li>&#127917; <strong>Amphitheatro</strong> &mdash; Two-deck show lounge</li>
+          <li>&#127914; Live magic shows &amp; musicals</li>
+          <li>&#128131; Dance lessons (Greek dances!)</li>
+          <li>&#127919; <strong>Casino Royale</strong></li>
+          <li>&#127908; Live music across all bars</li>
+          <li>&#127468;&#127479; Greek language mini-lessons</li>
+        </ul>
+      </div>
+
+      <div class="cruise-feat fade-up">
+        <div class="cf-icon">&#127946;</div>
+        <h4>Pools &amp; Recreation</h4>
+        <p>Two outdoor pools, sports courts, and sea views everywhere.</p>
+        <ul>
+          <li>&#127946; Two swimming pools (one with bar)</li>
+          <li>&#127934; Tennis &amp; basketball courts</li>
+          <li>&#127939; Outdoor jogging track</li>
+          <li>&#127918; Kids' room &amp; arcade</li>
+          <li>&#128247; Professional onboard photography</li>
+        </ul>
+      </div>
+
+      <div class="cruise-feat fade-up">
+        <div class="cf-icon">&#128134;</div>
+        <h4>Sozo Spa &amp; Wellness</h4>
+        <p>Full-service spa with 8 treatment rooms, sauna, and steam.</p>
+        <ul>
+          <li>&#128134; Facials, massages, body wraps, hot stones</li>
+          <li>&#128135; <strong>Glow Bar</strong> &mdash; Hair &amp; beauty salon</li>
+          <li>&#127777;&#65039; <strong>Drift Den</strong> &mdash; Sauna &amp; steam room</li>
+          <li>&#128170; Fully equipped fitness gym</li>
+        </ul>
+      </div>
+
+      <div class="cruise-feat fade-up">
+        <div class="cf-icon">&#128719;&#65039;</div>
+        <h4>Cabin Types</h4>
+        <p>Five categories from interior to luxury suites.</p>
+        <ul>
+          <li>&#11088; <strong>Stargazer Suite</strong> &mdash; Jacuzzi, balcony, concierge (up to 4)</li>
+          <li>&#127775; <strong>Grand Dream Suite</strong> &mdash; Living area, VIP (up to 4)</li>
+          <li>&#127774; <strong>Junior Dream Suite</strong> &mdash; Balcony (up to 3)</li>
+          <li>&#127749; <strong>Exterior Cosmos</strong> &mdash; Sea view, bathtub (2-4)</li>
+          <li>&#128716; <strong>Interior Cosmos</strong> &mdash; Budget-friendly (up to 4)</li>
+          <li>All cabins: A/C, TV, safe, phone, hair dryer</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- Cruise Itinerary with port details -->
+    <div class="sec-header" style="margin-bottom:1.5rem">
+      <h2 style="font-size:1.8rem">Port Schedule</h2>
+      <p style="color:rgba(255,255,255,0.5)">Your 4-night island-hopping route with time at each port</p>
+    </div>
+
+    <div class="cruise-itinerary">
+
+      <div class="cruise-port fade-up">
+        <div class="cp-icon">&#9875;</div>
+        <div class="cp-info">
+          <h4>Lavrion / Athens (Embarkation)</h4>
+          <p>Board the ship at Lavrion port, about 40 miles southeast of Athens. Private transfer from hotel at 8:30 AM.</p>
+        </div>
+        <div class="cp-time"><span class="hours">Day 1</span><span class="range">Mon, Jun 15<br>Departs ~1 PM</span></div>
+      </div>
+
+      <div class="cruise-port fade-up">
+        <div class="cp-icon">&#127965;&#65039;</div>
+        <div class="cp-info">
+          <h4>Mykonos</h4>
+          <p>Iconic whitewashed Cycladic town with windmills, Little Venice, and vibrant nightlife. Arrive for golden hour &mdash; perfect for sunset photos and waterfront dining in Little Venice.</p>
+        </div>
+        <div class="cp-time"><span class="hours">5 hrs</span><span class="range">Mon, Jun 15<br>6:00 PM &ndash; 11:00 PM</span></div>
+      </div>
+
+      <div class="cruise-port fade-up">
+        <div class="cp-icon">&#127963;&#65039;</div>
+        <div class="cp-info">
+          <h4>Kusadasi, Turkey (Ephesus)</h4>
+          <p>Gateway to ancient Ephesus &mdash; one of the best-preserved Roman cities on Earth. <strong>Excursion to Ephesus is included in your cruise fare.</strong> See the Library of Celsus, Great Theatre (25,000 seats), and Terrace Houses.</p>
+        </div>
+        <div class="cp-time"><span class="hours">6 hrs</span><span class="range">Tue, Jun 16<br>7:00 AM &ndash; 1:00 PM</span></div>
+      </div>
+
+      <div class="cruise-port fade-up">
+        <div class="cp-icon">&#128216;</div>
+        <div class="cp-info">
+          <h4>Patmos</h4>
+          <p>The Island of the Apocalypse, where St. John wrote the Book of Revelation. Visit the Cave of the Apocalypse and the hilltop Monastery of St. John (1088 A.D.). The UNESCO-listed village of Chora is stunning at dusk.</p>
+        </div>
+        <div class="cp-time"><span class="hours">5 hrs</span><span class="range">Tue, Jun 16<br>4:30 PM &ndash; 9:30 PM</span></div>
+      </div>
+
+      <div class="cruise-port fade-up">
+        <div class="cp-icon">&#9876;&#65039;</div>
+        <div class="cp-info">
+          <h4>Rhodes</h4>
+          <p>Your longest port stop! Explore Europe's largest inhabited medieval town (UNESCO). Walk the Street of the Knights, tour the Palace of the Grand Master, and find hidden courtyards in the Old Town. <strong>Excursion to the Acropolis of Lindos is included.</strong></p>
+        </div>
+        <div class="cp-time"><span class="hours">11 hrs</span><span class="range">Wed, Jun 17<br>7:00 AM &ndash; 6:00 PM</span></div>
+      </div>
+
+      <div class="cruise-port fade-up">
+        <div class="cp-icon">&#128002;</div>
+        <div class="cp-info">
+          <h4>Crete (Heraklion)</h4>
+          <p>Greece's largest island and birthplace of Minoan civilization. Shore excursion to the Palace of Knossos (home of the mythical Minotaur's Labyrinth) or explore the vibrant Heraklion waterfront and Venetian fortress.</p>
+        </div>
+        <div class="cp-time"><span class="hours">5 hrs</span><span class="range">Thu, Jun 18<br>7:00 AM &ndash; 12:00 PM</span></div>
+      </div>
+
+      <div class="cruise-port fade-up">
+        <div class="cp-icon">&#127773;</div>
+        <div class="cp-info">
+          <h4>Santorini</h4>
+          <p>The crown jewel. Perched on a volcanic caldera, Santorini's blue-domed churches and white cliffside villages are unforgettable. Your 4:30 PM arrival means you'll be there for the <strong>world-famous Santorini sunset</strong>. Take the cable car up the cliff, wander Fira or Oia, and end the evening at a rooftop taverna.</p>
+        </div>
+        <div class="cp-time"><span class="hours">5 hrs</span><span class="range">Thu, Jun 18<br>4:30 PM &ndash; 9:30 PM</span></div>
+      </div>
+
+      <div class="cruise-port fade-up">
+        <div class="cp-icon">&#9875;</div>
+        <div class="cp-info">
+          <h4>Lavrion / Athens (Disembarkation)</h4>
+          <p>Return to port at 6 AM. Your driver will meet you at 7 AM outside the vessel for transfer to Athens airport &mdash; then fly to Samos!</p>
+        </div>
+        <div class="cp-time"><span class="hours">Day 5</span><span class="range">Fri, Jun 19<br>Arrives ~6:00 AM</span></div>
+      </div>
+
+    </div>
+
+    <!-- Cruise Route Map -->
+    <div class="cruise-map-wrap fade-up">
+      <div id="cruise-map"></div>
+    </div>
+
+    <!-- Cruise Notes -->
+    <div class="cruise-note fade-up">
+      <h4>&#9989; Included with Your Cruise Fare</h4>
+      <p>All meals onboard &bull; Excursion to <strong>Ephesus</strong> &bull; Excursion to <strong>Acropolis of Lindos</strong> (Rhodes) &bull; Entertainment &amp; shows &bull; Pools &amp; fitness</p>
+    </div>
+
+    <div class="cruise-note fade-up" style="margin-top:1rem">
+      <h4>&#128176; Optional / Extra Cost</h4>
+      <p>Alcoholic beverages &amp; drink packages &bull; Spa treatments &bull; Casino &bull; Additional shore excursions &bull; Wi-Fi &bull; Specialty dining (Chef's Table) &bull; Duty-free shopping &bull; Professional photography</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- INCLUDED -->
+<section class="included-section" id="included">
+  <div class="container">
+    <div class="sec-header">
+      <div class="eyebrow">Know Before You Go</div>
+      <h2>What's Included</h2>
+      <p>Everything that's covered and what you'll need to handle yourselves</p>
+      <div class="accent-line"></div>
+    </div>
+
+    <div class="inc-grid">
+      <div class="inc-card yes fade-up">
+        <h3>&#9989; Covered &amp; Paid For</h3>
+        <ul>
+          <li><span>&#9992;&#65039;</span> International flights (JAX &harr; Athens)</li>
+          <li><span>&#9992;&#65039;</span> Domestic flights (Athens &harr; Samos)</li>
+          <li><span>&#127962;&#65039;</span> All hotel accommodations + breakfast</li>
+          <li><span>&#128663;</span> All private ground transportation (deluxe A/C)</li>
+          <li><span>&#128101;</span> Private English-speaking licensed guides</li>
+          <li><span>&#127915;</span> All entrance fees (Acropolis, Corinth, Meteora, Samos)</li>
+          <li><span>&#128737;&#65039;</span> Trip insurance</li>
+          <li><span>&#128739;&#65039;</span> Road tolls &amp; guide/driver expenses</li>
+        </ul>
+      </div>
+      <div class="inc-card no fade-up">
+        <h3>&#10060; On Your Own</h3>
+        <ul>
+          <li><span>&#128674;</span> Cruise (booked separately)</li>
+          <li><span>&#127846;</span> Meals &amp; drinks (except hotel breakfast &amp; cruise)</li>
+          <li><span>&#128176;</span> Climate Resilience Tax (small, paid at hotel)</li>
+          <li><span>&#128717;&#65039;</span> Personal expenses (shopping, snacks, laundry)</li>
+          <li><span>&#128181;</span> Gratuities / tips for guides &amp; drivers</li>
+          <li><span>&#127965;&#65039;</span> Shore excursions from the cruise</li>
+          <li><span>&#127973;</span> Emergency medical costs</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="meal-tip fade-up">
+      <h3>&#127860; Meal Strategy</h3>
+      <p>Hotels include breakfast. Plan one <strong>late lunch</strong> each day and a <strong>heavy evening snack</strong> &mdash; Greek yogurt, cheese, fresh bread, olives, and wine. On the cruise, meals are included. Check your medical benefits for international coverage before traveling.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PAYMENT -->
+<section class="payment-section" id="payment">
+  <div class="container">
+    <div class="sec-header">
+      <div class="eyebrow">Logistics</div>
+      <h2>Payment Information</h2>
+      <p>White Star Tours / Travel Smart</p>
+    </div>
+    <div class="pay-grid">
+      <div class="pay-card fade-up">
+        <div class="pay-icon">&#128179;</div>
+        <h3>Deposit</h3>
+        <div class="amount">$4,000</div>
+        <p>15% nonrefundable deposit to secure hotels &amp; flights. Send check in USD.</p>
+      </div>
+      <div class="pay-card fade-up">
+        <div class="pay-icon">&#128197;</div>
+        <h3>Final Payment Due</h3>
+        <p>Full remaining balance</p>
+        <div class="deadline">April 20, 2026</div>
+      </div>
+      <div class="pay-card fade-up">
+        <div class="pay-icon">&#10067;</div>
+        <h3>Pending Decision</h3>
+        <p>Extension to <strong>Ancient Corinth &amp; National Archaeological Museum</strong> adds cost. Decide before final payment.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact-section">
+  <div class="container">
+    <div class="sec-header">
+      <div class="eyebrow">Support</div>
+      <h2>Emergency Contacts</h2>
+      <p>Available 24/7 while traveling in Greece</p>
+      <div class="accent-line"></div>
+    </div>
+    <div class="contact-grid">
+      <div class="contact-card fade-up"><div class="cc-icon">&#127468;&#127479;</div><h3>Travel Smart (Greece)</h3><p>Local support, 24/7</p><span class="phone">+30 693 664 9736</span></div>
+      <div class="contact-card fade-up"><div class="cc-icon">&#9992;&#65039;</div><h3>American Airlines</h3><p>Group Reservation Desk</p><span class="phone">800-221-2255</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="ff">Morrel Family &bull; Greece 2026</div>
+  <p>Made with <span class="heart">&#10084;&#65039;</span> for Yaya</p>
+</footer>
+
+<script>
+// ===== COUNTDOWN =====
+function updateCD(){
+  const t=new Date('2026-06-10T09:50:00-04:00')-new Date();
+  if(t<=0)return;
+  document.getElementById('cd-d').textContent=Math.floor(t/864e5);
+  document.getElementById('cd-h').textContent=Math.floor(t%864e5/36e5);
+  document.getElementById('cd-m').textContent=Math.floor(t%36e5/6e4);
+  document.getElementById('cd-s').textContent=Math.floor(t%6e4/1e3);
+}
+updateCD();setInterval(updateCD,1000);
+
+// ===== NAV SCROLL =====
+const nav=document.getElementById('navbar');
+window.addEventListener('scroll',()=>{
+  nav.classList.toggle('scrolled',window.scrollY>80);
+  nav.classList.toggle('top',window.scrollY<=80);
+});
+
+// ===== FADE ANIMATIONS =====
+const obs=new IntersectionObserver(es=>{
+  es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('vis');});
+},{threshold:0.08});
+document.querySelectorAll('.fade-up').forEach(el=>obs.observe(el));
+
+// ===== MAIN MAP =====
+const locations=[
+  {name:'Athens',lat:37.9715,lng:23.7267,day:'Days 2-3, 5-6',desc:'Acropolis, Ancient Agora, Panathinaikon Stadium',color:'#e74c3c',icon:'&#127963;&#65039;'},
+  {name:'Ancient Corinth',lat:37.9061,lng:22.8795,day:'Day 3',desc:'Temple of Apollo, Corinth Canal, St. Paul\'s Basilica',color:'#e74c3c',icon:'&#9961;&#65039;'},
+  {name:'Meteora / Kalambaka',lat:39.7136,lng:21.6274,day:'Days 4-5',desc:'6 cliff-top monasteries, Byzantine church, unforgettable sunset',color:'#27ae60',icon:'&#9968;&#65039;'},
+  {name:'Lavrion Port',lat:37.713,lng:24.049,day:'Day 6',desc:'Cruise embarkation point',color:'#e74c3c',icon:'&#9875;'},
+  {name:'Mykonos',lat:37.4467,lng:25.3289,day:'Day 6 (6-11 PM)',desc:'Windmills, Little Venice, vibrant nightlife',color:'#2471a3',icon:'&#127965;&#65039;'},
+  {name:'Kusadasi (Ephesus)',lat:37.8579,lng:27.261,day:'Day 7 (7AM-1PM)',desc:'Library of Celsus, Great Theatre, Temple of Artemis',color:'#2471a3',icon:'&#127963;&#65039;'},
+  {name:'Patmos',lat:37.3094,lng:26.5479,day:'Day 7 (4:30-9:30 PM)',desc:'Cave of the Apocalypse, Monastery of St. John',color:'#2471a3',icon:'&#128216;'},
+  {name:'Rhodes',lat:36.4341,lng:28.2176,day:'Day 8 (7AM-6PM)',desc:'Medieval Old Town, Palace of the Grand Master',color:'#2471a3',icon:'&#9876;&#65039;'},
+  {name:'Crete (Heraklion)',lat:35.3387,lng:25.1442,day:'Day 9 (7AM-12PM)',desc:'Palace of Knossos, Minotaur\'s Labyrinth',color:'#2471a3',icon:'&#128002;'},
+  {name:'Santorini',lat:36.3932,lng:25.4615,day:'Day 9 (4:30-9:30 PM)',desc:'Caldera views, blue domes, legendary sunset',color:'#2471a3',icon:'&#127773;'},
+  {name:'Samos',lat:37.7579,lng:26.9776,day:'Days 10-12',desc:'Temple of Hera, Tunnel of Efpalinus, Pythagoreion',color:'#f39c12',icon:'&#127796;'},
+  {name:'Rafina',lat:38.0228,lng:24.0097,day:'Day 12',desc:'Last night near Athens airport',color:'#8e44ad',icon:'&#127962;&#65039;'}
+];
+
+const map=L.map('main-map',{scrollWheelZoom:false,zoomControl:true}).setView([37.5,25.5],6);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{
+  attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>',
+  maxZoom:18
+}).addTo(map);
+
+// Add markers
+locations.forEach(loc=>{
+  const icon=L.divIcon({
+    className:'',
+    html:`<div style="background:${loc.color};width:32px;height:32px;border-radius:50%;border:3px solid white;box-shadow:0 2px 10px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;font-size:14px;">${loc.icon}</div>`,
+    iconSize:[32,32],iconAnchor:[16,16]
+  });
+  L.marker([loc.lat,loc.lng],{icon}).addTo(map)
+    .bindPopup(`<div class="map-popup"><div class="day-tag">${loc.day}</div><h4>${loc.name}</h4><p>${loc.desc}</p></div>`);
+});
+
+// Draw route lines
+const mainRoute=[[37.9715,23.7267],[37.9061,22.8795],[37.9715,23.7267],[39.7136,21.6274],[37.9715,23.7267],[37.713,24.049]];
+const cruiseRoute=[[37.713,24.049],[37.4467,25.3289],[37.8579,27.261],[37.3094,26.5479],[36.4341,28.2176],[35.3387,25.1442],[36.3932,25.4615],[37.713,24.049]];
+const samosRoute=[[37.713,24.049],[37.7579,26.9776],[38.0228,24.0097],[37.9715,23.7267]];
+
+L.polyline(mainRoute,{color:'#e74c3c',weight:2.5,dashArray:'8,6',opacity:0.7}).addTo(map);
+L.polyline(cruiseRoute,{color:'#2471a3',weight:3,dashArray:'6,4',opacity:0.8}).addTo(map);
+L.polyline(samosRoute,{color:'#f39c12',weight:2.5,dashArray:'8,6',opacity:0.7}).addTo(map);
+
+// ===== HOTEL MINI MAPS =====
+function miniMap(id,lat,lng,zoom){
+  const el=document.getElementById(id);
+  if(!el)return;
+  const m=L.map(id,{scrollWheelZoom:false,zoomControl:false,dragging:false,attributionControl:false}).setView([lat,lng],zoom);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{maxZoom:18}).addTo(m);
+  L.circleMarker([lat,lng],{radius:8,fillColor:'#e74c3c',color:'white',weight:2,fillOpacity:1}).addTo(m);
+}
+miniMap('map-athens',37.9715,23.7267,13);
+miniMap('map-meteora',39.7136,21.6274,12);
+miniMap('map-samos',37.7489,26.9443,13);
+miniMap('map-rafina',38.0228,24.0097,13);
+
+// ===== CRUISE ROUTE MAP =====
+const cEl=document.getElementById('cruise-map');
+if(cEl){
+  const cMap=L.map('cruise-map',{scrollWheelZoom:false,zoomControl:true}).setView([36.8,26],7);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{
+    attribution:'&copy; OSM &copy; CARTO',maxZoom:18
+  }).addTo(cMap);
+
+  const cruisePorts=[
+    {name:'Lavrion (Start)',lat:37.713,lng:24.049,icon:'&#9875;',day:'Jun 15 & 19'},
+    {name:'Mykonos',lat:37.4467,lng:25.3289,icon:'&#127965;&#65039;',day:'Jun 15, 6-11 PM'},
+    {name:'Kusadasi',lat:37.8579,lng:27.261,icon:'&#127963;&#65039;',day:'Jun 16, 7AM-1PM'},
+    {name:'Patmos',lat:37.3094,lng:26.5479,icon:'&#128216;',day:'Jun 16, 4:30-9:30PM'},
+    {name:'Rhodes',lat:36.4341,lng:28.2176,icon:'&#9876;&#65039;',day:'Jun 17, 7AM-6PM'},
+    {name:'Crete',lat:35.3387,lng:25.1442,icon:'&#128002;',day:'Jun 18, 7AM-12PM'},
+    {name:'Santorini',lat:36.3932,lng:25.4615,icon:'&#127773;',day:'Jun 18, 4:30-9:30PM'},
+  ];
+  cruisePorts.forEach((p,i)=>{
+    const ic=L.divIcon({className:'',html:`<div style="background:#5dade2;width:30px;height:30px;border-radius:50%;border:2px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;font-size:13px;color:white;font-weight:700;">${i+1}</div>`,iconSize:[30,30],iconAnchor:[15,15]});
+    L.marker([p.lat,p.lng],{icon:ic}).addTo(cMap).bindPopup(`<div class="map-popup"><div class="day-tag">${p.day}</div><h4>${p.name}</h4></div>`);
+  });
+  const cRoute=cruisePorts.map(p=>[p.lat,p.lng]);
+  cRoute.push([37.713,24.049]);
+  L.polyline(cRoute,{color:'#5dade2',weight:3,dashArray:'8,5',opacity:0.9}).addTo(cMap);
+}
+</script>
+
+</body>
+</html>
